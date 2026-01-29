@@ -6,17 +6,14 @@ import { GUI } from 'dat.gui'
 
 
 const scene = new THREE.Scene()
-//scene.background = new THREE.Color(0x123456)
-//scene.background = new THREE.TextureLoader().load('https://sbcode.net/img/grid.png')
-scene.background = new THREE.CubeTextureLoader().setPath('https://sbcode.net/img/').load(
-  ['px.png',
-    'nx.png',
-    'py.png',
-    'ny.png',
-    'pz.png',
-    'nz.png'
-  ])
-scene.backgroundBlurriness = 0.5
+
+const backgroundA = new THREE.Color(0x123456)
+const backgroundB = new THREE.TextureLoader().load('https://sbcode.net/img/grid.png')
+const backgroundC = new THREE.CubeTextureLoader()
+  .setPath('https://sbcode.net/img/')
+  .load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'])
+
+scene.background = backgroundA
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 1.5
@@ -42,25 +39,23 @@ scene.add(cube)
 const stats = new Stats()
 document.body.appendChild(stats.dom)
 
+const setBackground = {
+  sceneA: () => (scene.background = backgroundA),
+  sceneB: () => (scene.background = backgroundB),
+  sceneC: () => (scene.background = backgroundC),
+}
+
 const gui = new GUI()
 
-const cubeFolder = gui.addFolder('Cube')
-cubeFolder.add(cube.rotation, 'x', 0, Math.PI * 2)
-cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2)
-cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2)
-cubeFolder.open()
-
-const cameraFolder = gui.addFolder('Camera')
-cameraFolder.add(camera.position, 'z', 0, 20)
-cameraFolder.open()
+gui.add(setBackground, 'sceneA').name('Scene A')
+gui.add(setBackground, 'sceneB').name('Scene B')
+gui.add(setBackground, 'sceneC').name('Scene C')
 
 function animate() {
   requestAnimationFrame(animate)
 
-  //stats.begin()
   //cube.rotation.x += 0.01
   //cube.rotation.y += 0.01
-  //stats.end()
 
   renderer.render(scene, camera)
 
