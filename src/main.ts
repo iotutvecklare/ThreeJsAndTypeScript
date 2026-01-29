@@ -51,6 +51,13 @@ gui.add(setBackground, 'sceneA').name('Scene A')
 gui.add(setBackground, 'sceneB').name('Scene B')
 gui.add(setBackground, 'sceneC').name('Scene C')
 
+// Cube controls (works always because cube is always the same object)
+const cubeFolder = gui.addFolder('Cube')
+cubeFolder.add(cube.rotation, 'x', 0, Math.PI * 2, 0.01)
+cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2, 0.01)
+cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2, 0.01)
+cubeFolder.open()
+
 function animate() {
   requestAnimationFrame(animate)
 
