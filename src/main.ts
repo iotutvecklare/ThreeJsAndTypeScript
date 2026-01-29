@@ -6,6 +6,7 @@ import { GUI } from 'dat.gui'
 
 
 const scene = new THREE.Scene()
+scene.add(new THREE.GridHelper())
 
 const backgroundA = new THREE.Color(0x123456)
 const backgroundB = new THREE.TextureLoader().load('https://sbcode.net/img/grid.png')
@@ -16,7 +17,8 @@ const backgroundC = new THREE.CubeTextureLoader()
 scene.background = backgroundA
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.z = 1.5
+//camera.position.set(0, 2, 3)
+//camera.lookAt(0, 0.5, 0)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -28,12 +30,13 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight)
 })
 
-new OrbitControls(camera, renderer.domElement)
+//new OrbitControls(camera, renderer.domElement)
 
 const geometry = new THREE.BoxGeometry()
 const material = new THREE.MeshNormalMaterial({ wireframe: true })
 
 const cube = new THREE.Mesh(geometry, material)
+cube.position.y = 0.5
 scene.add(cube)
 
 const stats = new Stats()
@@ -58,11 +61,27 @@ cubeFolder.add(cube.rotation, 'y', 0, Math.PI * 2, 0.01)
 cubeFolder.add(cube.rotation, 'z', 0, Math.PI * 2, 0.01)
 cubeFolder.open()
 
+// Camera controls
+const cameraFolder = gui.addFolder('Camera')
+cameraFolder.add(camera.position, 'x', -10, 10)
+cameraFolder.add(camera.position, 'y', -10, 10)
+cameraFolder.add(camera.position, 'z', -10, 10)
+cameraFolder.add(camera, 'fov', 0, 180, 0.01).onChange(() => {
+  camera.updateProjectionMatrix()
+})
+cameraFolder.add(camera, 'aspect', 0.00001, 10).onChange(() => {
+  camera.updateProjectionMatrix()
+})
+cameraFolder.add(camera, 'near', 0.01, 10).onChange(() => {
+  camera.updateProjectionMatrix()
+})
+cameraFolder.add(camera, 'far', 0.01, 10).onChange(() => {
+  camera.updateProjectionMatrix()
+})
+cameraFolder.open()
+
 function animate() {
   requestAnimationFrame(animate)
-
-  //cube.rotation.x += 0.01
-  //cube.rotation.y += 0.01
 
   renderer.render(scene, camera)
 
