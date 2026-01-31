@@ -1,12 +1,27 @@
+/*
+Object3D
+
+Object3D is the base class for many objects in Three.js.
+It provides all the common methods and properties for manipulating objects in 3D space.
+The most common examples of Object3Ds that you will see are Meshes, Lights, Cameras and Groups of Object3Ds.
+The full list of Object3D methods and properties can be found in the Three.js documentation at THREE.Object3D
+In this video I will introduce the most common things that you will do with an Object3D and that is to change,
+
+https://sbcode.net/threejs/three-object3d/
+*/
+
+
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import Stats from 'three/addons/libs/stats.module.js'
+import { GUI } from 'dat.gui'
 
 const scene = new THREE.Scene()
+scene.add(new THREE.AxesHelper(5))
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.z = 1.5
+camera.position.set(1, 2, 3)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -29,11 +44,32 @@ scene.add(cube)
 const stats = new Stats()
 document.body.appendChild(stats.dom)
 
+const gui = new GUI()
+
+const cubeFolder = gui.addFolder('Cube')
+cubeFolder.add(cube, 'visible')
+cubeFolder.open()
+
+const positionFolder = cubeFolder.addFolder('Position')
+positionFolder.add(cube.position, 'x', -5, 5)
+positionFolder.add(cube.position, 'y', -5, 5)
+positionFolder.add(cube.position, 'z', -5, 5)
+positionFolder.open()
+
+const rotationFolder = cubeFolder.addFolder('Rotation')
+rotationFolder.add(cube.rotation, 'x', 0, Math.PI * 2)
+rotationFolder.add(cube.rotation, 'y', 0, Math.PI * 2)
+rotationFolder.add(cube.rotation, 'z', 0, Math.PI * 2)
+rotationFolder.open()
+
+const scaleFolder = cubeFolder.addFolder('Scale')
+scaleFolder.add(cube.scale, 'x', -5, 5)
+scaleFolder.add(cube.scale, 'y', -5, 5)
+scaleFolder.add(cube.scale, 'z', -5, 5)
+scaleFolder.open()
+
 function animate() {
   requestAnimationFrame(animate)
-
-  cube.rotation.x += 0.01
-  cube.rotation.y += 0.01
 
   renderer.render(scene, camera)
 
@@ -42,33 +78,8 @@ function animate() {
 
 animate()
 
-/*
-Frame Rate Independence. Making the code frame rate independent by considering clock delta time.
 
-function animate() {
-  requestAnimationFrame(animate)
-
-  delta = clock.getDelta()
-
-  cube.rotation.x += delta
-  cube.rotation.y += delta
-
-  renderer.render(scene, camera)
-
-  stats.update()
-}
-
-animate()
-*/
-
-/*
-On Demand Rendering. Making the code render only when the OrbitControls properties change or the screen is resized.
-
-renderer.render(scene, camera) // render once when the scene has been setup
-*/
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 import './style.css'
