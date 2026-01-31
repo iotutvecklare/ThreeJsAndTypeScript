@@ -1,35 +1,22 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import Stats from 'three/addons/libs/stats.module.js'
 
 const scene = new THREE.Scene()
 
-//const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 1.5
 
-/*
-The most common Renderer used in Three.js is the WebGLRenderer.
-It paints the scene and camera information onto a HTML Canvas Element.
-The WebGLRenderer will use WebGL.
-WebGL allows GPU-accelerated image processing and effects as the renderer creates the 2D image for the Canvas.
- */
+const renderer = new THREE.WebGLRenderer()
+renderer.setSize(window.innerWidth, window.innerHeight)
+document.body.appendChild(renderer.domElement)
 
-const canvas = document.getElementById('canvas') as HTMLCanvasElement
-const renderer = new THREE.WebGLRenderer({ canvas: canvas })
-renderer.setSize(200, 200)
-
-
-// const renderer = new THREE.WebGLRenderer()
-// renderer.setSize(window.innerWidth, window.innerHeight)
-// document.body.appendChild(renderer.domElement)
-
-
-// window.addEventListener('resize', () => {
-//   camera.aspect = window.innerWidth / window.innerHeight
-//   camera.updateProjectionMatrix()
-//   renderer.setSize(window.innerWidth, window.innerHeight)
-// })
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+})
 
 new OrbitControls(camera, renderer.domElement)
 
@@ -39,13 +26,49 @@ const material = new THREE.MeshNormalMaterial({ wireframe: true })
 const cube = new THREE.Mesh(geometry, material)
 scene.add(cube)
 
+const stats = new Stats()
+document.body.appendChild(stats.dom)
+
 function animate() {
   requestAnimationFrame(animate)
 
+  cube.rotation.x += 0.01
+  cube.rotation.y += 0.01
+
   renderer.render(scene, camera)
+
+  stats.update()
 }
 
 animate()
+
+/*
+Frame Rate Independence. Making the code frame rate independent by considering clock delta time.
+
+function animate() {
+  requestAnimationFrame(animate)
+
+  delta = clock.getDelta()
+
+  cube.rotation.x += delta
+  cube.rotation.y += delta
+
+  renderer.render(scene, camera)
+
+  stats.update()
+}
+
+animate()
+*/
+
+/*
+On Demand Rendering. Making the code render only when the OrbitControls properties change or the screen is resized.
+
+renderer.render(scene, camera) // render once when the scene has been setup
+*/
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 import './style.css'
